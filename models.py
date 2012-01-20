@@ -6,17 +6,15 @@ class RESTed(object):
   Base class for RESTful objects
   Automatically populates model with REST hooks
   To use, set __json__ to the attributes that should be returned by the object
+  The __init__ must validate data that it receives and assume possible malicious content
   """
   @classmethod
   def register(kls):
-    app.add_url_rule(
-      "/models/%s/post" % kls.__tablename__,
-      view_func=kls.rest_create
-    )
-    app.add_url_rule(
-      "/models/%s/get/<int:obj_id>" % kls.__tablename__,
-      view_func=kls.rest_get
-    )
+    kname = kls.__tablename__
+    app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["POST"])
+    app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._get, methods=["GET"])
+    app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._update, methods=["PUT"])
+    app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._delete, methods=["DELETE"])
 
   def __iter__(self):
     """
@@ -25,23 +23,26 @@ class RESTed(object):
     for attr in self.__json__:
       yield attr, getattr(self, attr)
 
-  @classmethod
-  def rest_create(kls):
-    # TODO: Make this generic by accepting anything and pushing validation into __init__ of class or similar
-    # TODO: Currently each object is a list -- just get one
-    obj = kls(**request.args)
-    db.session.add(obj)
-    db.session.commit()
-    return "Created TODO"
+  # TODO: Auth
 
   @classmethod
-  def rest_get(kls, obj_id):
-    """
-    Generic function that returns the JSONified object
-    TODO: Consider access privileges for objects -- only safe for public objects currently
-    """
+  def _post(kls):
+    d = dict((k,request.args.get(k)) for k in request.args)
+    obj = kls(**d)
+    db.session.add(obj)
+    db.session.commit()
+    return jsonify(obj)
+
+  @classmethod
+  def _get(kls, obj_id):
     obj = kls.query.get_or_404(obj_id)
     return jsonify(obj)
+
+  def _update(kls, obj_id):
+    pass
+
+  def _delete(kls, obj_id):
+    pass
 
 class Todo(db.Model, RESTed):
   __tablename__ = 'todos'
