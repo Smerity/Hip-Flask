@@ -12,6 +12,7 @@ class RESTed(object):
   def register(kls):
     kname = kls.__tablename__
     app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["POST"])
+    app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["GET"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._get, methods=["GET"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._update, methods=["PUT"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._delete, methods=["DELETE"])
@@ -38,11 +39,20 @@ class RESTed(object):
     obj = kls.query.get_or_404(obj_id)
     return jsonify(obj)
 
+  @classmethod
   def _update(kls, obj_id):
-    pass
+    obj = kls.query.get_or_404(obj_id)
+    # TODO: Ensure validation occurs when setattr is called
+    for k in request.args:
+      setattr(obj, k, request.args.get(k))
+    db.session.commit()
+    return jsonify(obj)
 
+  @classmethod
   def _delete(kls, obj_id):
-    pass
+    obj = kls.query.get_or_404(obj_id)
+    obj.delete()
+    db.session.commit()
 
 class Todo(db.Model, RESTed):
   __tablename__ = 'todos'
