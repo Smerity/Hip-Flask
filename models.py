@@ -1,5 +1,5 @@
 from app import app, db
-from flask import jsonify, request
+from flask import abort, jsonify, request
 
 class RESTed(object):
   """
@@ -11,9 +11,9 @@ class RESTed(object):
   @classmethod
   def register(kls):
     kname = kls.__tablename__
-    app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["POST"])
-    app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["GET"])
+    app.add_url_rule("/models/%s" % kname, view_func=kls._get_all, methods=["GET"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._get, methods=["GET"])
+    app.add_url_rule("/models/%s" % kname, view_func=kls._post, methods=["POST"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._update, methods=["PUT"])
     app.add_url_rule("/models/%s/<int:obj_id>" % kname, view_func=kls._delete, methods=["DELETE"])
 
@@ -38,6 +38,11 @@ class RESTed(object):
   def _get(kls, obj_id):
     obj = kls.query.get_or_404(obj_id)
     return jsonify(obj)
+
+  @classmethod
+  def _get_all(kls):
+    # Disabled by default as this is a security vulnerability for large tables
+    abort(404)
 
   @classmethod
   def _update(kls, obj_id):
