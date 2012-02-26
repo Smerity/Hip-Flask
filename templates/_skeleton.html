@@ -1,0 +1,34 @@
+{% from "_macros.html" import flash_messages %}
+{% if "X-PJAX" not in request.headers %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+{% endif %}
+    <title>{% block title %}{{ site.name }}{% if page.title %}: {{page.title}}{% endif %}{% endblock %}</title>
+{% if "X-PJAX" not in request.headers %}
+    <meta charset="utf-8">
+    {% block head %}{% endblock %}
+    {% block css %}{% endblock %}
+    {% block extra_css %}{% endblock %}
+    {% block js %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+  </head>
+  <body id="body-main">
+{% endif %}
+  {% block header %}
+  {% endblock %}
+  {% block body %}
+  <div class="{% block container_type %}container{% endblock %}">
+    {% block flash_bar %}
+      {{ flash_messages() }}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+  </div>
+  {% endblock %}
+  {% block footer %}
+  {% endblock %}
+{% if "X-PJAX" not in request.headers %}
+  </body>
+</html>
+{% endif %}

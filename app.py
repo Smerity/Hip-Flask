@@ -1,11 +1,44 @@
-from flask import Flask
+# General imports
+import flask
+import logging
+from logging.handlers import SysLogHandler
+
+# Flask imports
+from flaskext.cache import Cache
+from flaskext.lesscss import lesscss
+from flaskext.mail import Mail
+from flaskext.openid import OpenID
 from flaskext.sqlalchemy import SQLAlchemy
+##
+from safe_session import SafeSessions
 
-app = Flask(__name__)
-app.config.from_object("config.Development")
+app = flask.Flask(__name__)
+# Enables the "with" keyword extension in Jinja2
+app.jinja_env.add_extension("jinja2.ext.with_")
+
+# Flask Config Setup
+####################
+if app.debug:
+  app.config.from_object("config.Development")
+else:
+  app.config.from_object("config.Production")
+  file_handler = SysLogHandler()
+  file_handler.setLevel(logging.WARNING)
+  app.logger.addHandler(file_handler)
+
+# Flask Extensions Setup
+########################
+import flask_extensions
+cache = Cache(app)
 db = SQLAlchemy(app)
-from models import Todo
+# In production, the OpenID backend should be changed from the default FileStore
+oid = OpenID(app, "./openid_store")
+SafeSessions(app)
+if app.config["MAIL_SERVER"]:
+  mail=Mail(app)
 
-@app.route("/")
-def index():
-  return "Hello world " + Todo.__tablename__ + " and DEBUG = " + str(app.config["DEBUG"]) + " and SQL = " + app.config["SQLALCHEMY_DATABASE_URI"]
+# Views
+import admin
+app.register_blueprint(admin.admin_console, url_prefix="/admin")
+import oid
+import views

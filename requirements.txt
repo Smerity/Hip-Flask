@@ -1,3 +1,16 @@
+# General requirements
+itsdangerous
+markdown
+
+# Flask specific requirements
 flask
+flask-mail
+flask-openid
 flask-script
 flask-sqlalchemy
+
+# Planned requirements
+#flask-cache
+#flask-lesscss
+#flask-sijax
+#flask-wtf

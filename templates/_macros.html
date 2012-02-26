@@ -1,0 +1,33 @@
+{# Flash the messages in a Bootstrap compatible style #}
+{% macro flash_messages() %}
+  <div id="flash-message-area">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes unstyled">
+        {% for category, message in messages %}
+        <li class="fade in alert {% if category %}{{ category }}{% else %}error{% endif %}">
+          <a data-dismiss="alert" class="close">×</a>{{ message|safe }}
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  </div>
+{% endmacro %}
+
+{% macro render_field(field) %}
+  <div class="clearfix shortclear {% if field.errors %}error{% endif %}">
+    <label for="{{ field.name }}">{{ field.label }}</label>
+    <div class="input">
+      {{ field(**kwargs)|safe }}
+      {% for error in field.errors %}
+        <span class="help-inline">{{ error }}</span>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro link_to(endpoint, text) -%}
+<a href="{{ url_for(endpoint, **kwargs) }}">{{ text|safe }}</a>
+{%- endmacro %}

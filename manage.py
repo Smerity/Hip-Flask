@@ -3,6 +3,7 @@ from app import app, db
 
 manager = Manager(app)
 
+# SQLAlchemy commands
 @manager.command
 def initdb():
   """Creates all database tables."""
