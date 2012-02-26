@@ -1,0 +1,12 @@
+{% extends "_base.html" %}
+
+{% block title %}Sign in via OpenID{% endblock %}
+
+{% block content %}
+  <h2>Sign in via OpenID</h2>
+  <form class="well form-inline" action="" method="post">
+    <input type="text" class="input-xlarge" name="openid" value="https://www.google.com/accounts/o8/id" size=60>
+    <input type="hidden" name="next" value="{{ next }}">
+    <input class="btn btn-primary" type="submit" value="Sign in">
+  </form>
+{% endblock %}
