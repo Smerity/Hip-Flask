@@ -7,6 +7,7 @@ Features
 --------
 
 - Implemented OpenID through `Flask-OpenID <http://packages.python.org/Flask-OpenID/>`_
+- Simple AJAX to Python calls using `Flask-Sijax <http://packages.python.org/Flask-Sijax/>`_
 - Protected Admin section
 - Secure Sessions via `ItsDangerous <http://packages.python.org/itsdangerous/>`_
 - Integration of Flask components into `Twitter Bootstrap <http://twitter.github.com/bootstrap/>`_
