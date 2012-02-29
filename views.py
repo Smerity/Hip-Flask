@@ -30,17 +30,8 @@ def global_sijax():
 
 @app.route("/", methods=["get", "post"])
 def index():
-  # Sijax
+  # Sijax automatically catches JS requests and forwards them appropriately
   if flask.g.sijax.is_sijax_request:
     return flask.g.sijax.process_request()
 
-  content = []
-  content.append("# Hip-Flask")
-  content.append("""Flask-Sijax provides easy AJAX use: you can easily <a onclick="Sijax.request('flash_messages');">flash your Flask messages</a> or <a onclick="Sijax.request('say_hi');">say hello</a> from the server to the client.\n""")
-  content.append("As I know you're so interested, here are some general values for debugging whilst setting up...")
-  content.append("\n")
-  content.append('<table class="table table-bordered table-striped table-condensed">')
-  content.extend(["<tr><td>%s</td><td><strong>%s</strong></td>" % (k,v) for k,v in app.config.items()])
-  content.append('</table>')
-  content = "\n".join(content)
-  return flask.render_template("md_template.html", content=content)
+  return flask.render_template("index.html")

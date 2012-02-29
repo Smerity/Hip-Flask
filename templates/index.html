@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+{% from "_macros.html" import sijax_link, link_to %}
+
+{% block content %}
+{% filter markdown %}
+# Hip-Flask
+Flask-Sijax provides easy AJAX use: you can easily {{ sijax_link("flash_messages", "flash your Flask messages") }} or {{ sijax_link("say_hi", "say hello") }} from the server to the client.  
+As I know you're so interested, here are some general values for debugging whilst setting up...
+
+{# Here's a thought ... Sijax function that's just a HTML view #}
+{# {{ sijax_link("render_settings", "View your settings?") }} #}
+{# filter sijax_template("render_settings") #}
+<table class="table table-bordered table-striped table-condensed">
+  <thead><th>Option</th><th>Default</th></thead>
+{% for k,v in config.items() %}
+  <tr><td>{{ k }}</td><td><i>{{ v }}</i></td>
+{% endfor %}
+</table>
+{# endfilter #}
+
+{% endfilter %}
+{% endblock %}
