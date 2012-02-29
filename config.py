@@ -11,6 +11,10 @@ class BaseConfig(object):
   MAIL_USERNAME = "user@gmail.com"
   MAIL_PASSWORD = "..."
 
+  # Flask-Sijax setup
+  SIJAX_JSON_URI = "static/js/json2.js"
+  SIJAX_STATIC_PATH = "static/js/sijax/"
+
 class Development(BaseConfig):
   DEBUG = True
 

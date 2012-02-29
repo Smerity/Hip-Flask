@@ -7,10 +7,10 @@ flask
 flask-mail
 flask-openid
 flask-script
+flask-sijax
 flask-sqlalchemy
 
 # Planned requirements
 #flask-cache
 #flask-lesscss
-#flask-sijax
 #flask-wtf

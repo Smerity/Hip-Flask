@@ -20,7 +20,9 @@
   {% block body %}
   <div class="{% block container_type %}container{% endblock %}">
     {% block flash_bar %}
-      {{ flash_messages() }}
+      <div id="flash-message-area">
+        {{ flash_messages() }}
+      </div>
     {% endblock %}
     {% block content %}
     {% endblock %}

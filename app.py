@@ -4,6 +4,7 @@ import logging
 from logging.handlers import SysLogHandler
 
 # Flask imports
+import flask_sijax
 from flaskext.cache import Cache
 from flaskext.lesscss import lesscss
 from flaskext.mail import Mail
@@ -20,6 +21,7 @@ app.jinja_env.add_extension("jinja2.ext.with_")
 ####################
 if app.debug:
   app.config.from_object("config.Development")
+  logging.warn("Running in development mode...")
 else:
   app.config.from_object("config.Production")
   file_handler = SysLogHandler()
@@ -31,6 +33,7 @@ else:
 import flask_extensions
 cache = Cache(app)
 db = SQLAlchemy(app)
+flask_sijax.Sijax(app)
 # In production, the OpenID backend should be changed from the default FileStore
 oid = OpenID(app, "./openid_store")
 SafeSessions(app)
@@ -38,6 +41,7 @@ if app.config["MAIL_SERVER"]:
   mail=Mail(app)
 
 # Views
+#######
 import admin
 app.register_blueprint(admin.admin_console, url_prefix="/admin")
 import oid

@@ -1,4 +1,5 @@
 import flask
+import jinja2
 
 from app import app
 
@@ -11,10 +12,31 @@ def admin_hacked():
     flask.flash(u"You have to be logged in to haxxor silly..!", "alert-error")
   return flask.redirect(flask.url_for("admin_console.admin_index"))
 
-@app.route("/")
+@app.before_request
+def global_sijax():
+  # List of global callbacks for Sijax to be included on all pages
+  def say_hi(obj_response):
+    name = "mate"
+    if flask.g.user:
+      name = flask.g.user["fullname"] if flask.g.user["fullname"] else flask.g.user["nickname"]
+    obj_response.alert("Hi there %s!" % name)
+  flask.g.sijax.register_callback("say_hi", say_hi)
+
+  def flash_messages(obj_response):
+    flash_messages = flask.get_template_attribute("_macros.html", "flash_messages")
+    flask.flash(u"Retrieving flash messages via JS (Sijax)...")
+    obj_response.html("#flash-message-area", flash_messages())
+  flask.g.sijax.register_callback("flash_messages", flash_messages)
+
+@app.route("/", methods=["get", "post"])
 def index():
+  # Sijax
+  if flask.g.sijax.is_sijax_request:
+    return flask.g.sijax.process_request()
+
   content = []
-  content.append("#Hello world!")
+  content.append("# Hip-Flask")
+  content.append("""Flask-Sijax provides easy AJAX use: you can easily <a onclick="Sijax.request('flash_messages');">flash your Flask messages</a> or <a onclick="Sijax.request('say_hi');">say hello</a> from the server to the client.\n""")
   content.append("As I know you're so interested, here are some general values for debugging whilst setting up...")
   content.append("\n")
   content.append('<table class="table table-bordered table-striped table-condensed">')
