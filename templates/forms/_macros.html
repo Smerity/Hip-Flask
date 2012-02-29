@@ -1,0 +1,31 @@
+{% macro render_field(field) %}
+  <div class="control-group {% if field.errors %}error{% elif field.data != None %}success{% endif %}">
+    <label class="control-label success" for="{{ field.name }}">{{ field.label.text }}</label>
+    <div class="controls">
+      {{ field(**kwargs)|safe }}
+      {% for error in field.errors %}
+        <span class="help-inline">{{ error|safe }}</span>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro modify_object(kls, form, form_action="Add") %}
+  <form class="form-horizontal" action="" method="post">
+    <fieldset>
+      {% for k in form.ordered_fields %}
+        {% if form._fields[k].__class__.__name__ == "HiddenField" %}
+          {# Skip displaying these as they're handled by hidden_tag #}
+        {% else %}
+          {{ render_field(form._fields[k]) }}
+        {% endif %}
+      {% endfor %}
+      {# Add anything in addition to the object fields (such as the CSRF token) #}
+      {{ form.hidden_tag() }}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ form_action }} {{ kls.__name__.replace("_", " ").title() }}</button>
+      </div>
+    </fieldset>
+  </form>
+{% endmacro %}

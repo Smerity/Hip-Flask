@@ -6,7 +6,7 @@ admin_console = flask.Blueprint("admin_console", __name__)
 def restrict_to_admins():
   # TODO: This should be secure for your web application
   # NOTE: It may make sense to instead use a login_required decorator but before_request is safest as it cannot be forgotten
-  if not flask.g.user or "admin" not in flask.g.user:
+  if not flask.g.user or not flask.g.user.admin:
     content = "# Admin Console\n<i class='icon icon-ban-circle'></i> Access denied due to high level retina and fingerprint check!\n\n"
     content += "<a href='%s'><i class='icon icon-fire'></i> Haxx0r t3h syst3m?</a>" % flask.url_for("admin_hacked")
     return flask.render_template("md_template.html", content=content), 403

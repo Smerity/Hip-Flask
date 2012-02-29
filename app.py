@@ -19,6 +19,7 @@ app.jinja_env.add_extension("jinja2.ext.with_")
 
 # Flask Config Setup
 ####################
+app.debug = True
 if app.debug:
   app.config.from_object("config.Development")
   logging.warn("Running in development mode...")
@@ -45,4 +46,6 @@ if app.config["MAIL_SERVER"]:
 import admin
 app.register_blueprint(admin.admin_console, url_prefix="/admin")
 import oid
+import forms
+import models
 import views

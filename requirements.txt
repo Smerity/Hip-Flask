@@ -9,8 +9,8 @@ flask-openid
 flask-script
 flask-sijax
 flask-sqlalchemy
+flask-wtf
 
 # Planned requirements
 #flask-cache
 #flask-lesscss
-#flask-wtf

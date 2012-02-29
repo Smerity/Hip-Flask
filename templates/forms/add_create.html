@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% block title %} Create a new user {% endblock %}
+
+{% block content %}
+{% from "forms/_macros.html" import modify_object %}
+<h1>Add a new user</h1>
+
+{{ modify_object(models.User, form) }}
+
+{% endblock %}
