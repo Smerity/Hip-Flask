@@ -21,11 +21,22 @@ class Development(BaseConfig):
   ## SQLAlchemy
   SQLALCHEMY_DATABASE_URI = "sqlite:///sqlite.db"
 
+  ### Cache
+  CACHE_TYPE = "simple"
+  # By default, cache for 3 minutes
+  CACHE_DEFAULT_TIMEOUT = 3 * 60
+
 class Production(BaseConfig):
   DEBUG = False
 
   ## SQLAlchemy
   SQLALCHEMY_DATABASE_URI = "mysql://..."
+
+  ### Cache
+  ## Upgrade to Memcache, Redis or similar in Production
+  CACHE_TYPE = "simple"
+  # By default, cache for 3 minutes
+  CACHE_DEFAULT_TIMEOUT = 3 * 60
 
 class TestingConfig(Development):
   TESTING = True
