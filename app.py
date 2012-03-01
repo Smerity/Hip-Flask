@@ -13,33 +13,43 @@ from flaskext.sqlalchemy import SQLAlchemy
 ##
 from safe_session import SafeSessions
 
-app = flask.Flask(__name__)
-# Enables the "with" keyword extension in Jinja2
-app.jinja_env.add_extension("jinja2.ext.with_")
-
 # Flask Config Setup
 ####################
-app.debug = True
-if app.debug:
-  app.config.from_object("config.Development")
-  logging.warn("Running in development mode...")
-else:
-  app.config.from_object("config.Production")
-  file_handler = SysLogHandler()
-  file_handler.setLevel(logging.WARNING)
-  app.logger.addHandler(file_handler)
+def create_app(debug=False, config=None):
+  app = flask.Flask(__name__)
+  if config:
+    # Useful for tests
+    app.config.from_object(config)
+  elif debug:
+    # Development mode
+    app.config.from_object("config.Development")
+    logging.warn("Running in development mode...")
+  else:
+    # Production mode
+    app.config.from_object("config.Production")
+    file_handler = SysLogHandler()
+    file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
+
+  # Enables the "with" keyword extension in Jinja2
+  app.jinja_env.add_extension("jinja2.ext.with_")
+
+  return app
+
+app = create_app(debug=True)
 
 # Flask Extensions Setup
 ########################
-import flask_extensions
 cache = Cache(app)
 db = SQLAlchemy(app)
 flask_sijax.Sijax(app)
 # In production, the OpenID backend should be changed from the default FileStore
 oid = OpenID(app, "./openid_store")
 SafeSessions(app)
-if app.config["MAIL_SERVER"]:
+if "MAIL_SERVER" in app.config:
   mail=Mail(app)
+##
+import flask_extensions
 
 # Views
 #######
