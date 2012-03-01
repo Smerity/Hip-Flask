@@ -3,6 +3,29 @@ import jinja2
 
 from app import app, db
 
+def block_getter(template_name, context=None):
+  import jinja2
+  t = flask.current_app.jinja_env.get_template(template_name)
+  blocks = t.blocks
+
+  class PretendContext(dict):
+    def resolve(self, key):
+      if key in self:
+        return self[key]
+      return jinja2.Undefined
+
+  context = PretendContext(context) if context else {}
+
+  def get_block(obj_response, name):
+    if name in blocks:
+      block = blocks[name]
+    else:
+      obj_response.alert("Sijax error: No such given block")
+      return
+    print [x for x in block(context)]
+    obj_response.html("#_block_" + name, "".join(block(context)))
+  return get_block
+
 @app.route("/haxxor")
 def admin_hacked():
   if flask.g.user:
@@ -33,7 +56,9 @@ def global_sijax():
 @app.route("/", methods=["GET", "POST"])
 def index():
   # Sijax automatically catches JS requests and forwards them appropriately
+  from datetime import datetime
+  context = dict(ctime=str(datetime.utcnow()))
+  flask.g.sijax.register_callback("render_block", block_getter("index.html", context))
   if flask.g.sijax.is_sijax_request:
     return flask.g.sijax.process_request()
-
-  return flask.render_template("index.html")
+  return flask.render_template("index.html", **context)

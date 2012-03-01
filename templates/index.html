@@ -6,6 +6,19 @@
 {% filter markdown %}
 # Hip-Flask
 Flask-Sijax provides easy AJAX use: you can easily {{ sijax_link("flash_messages", "flash your Flask messages") }} or {{ sijax_link("say_hi", "say hello") }} from the server to the client.  
+With an additional extension Hip-Flask provides, Sijax can also be used to render specific blocks in a Jinja2 template and send them back to update the page -- all with a single line of Javascript!
+
+<div id="_block_curtime">
+{% block curtime -%}
+  <p class="alert alert-error">
+    Look at the time! It's <strong>{{ ctime }}</strong>! I must run!
+  </p>
+{%- endblock %}
+</div>
+
+Oh -- wait -- that's not the time anymore? Try {{ sijax_link("render_block", "refreshing it", "['curtime']") }}!  
+Obviously it's slower and more bandwidth intensive than passing JSON back to client side Javascript but it's far quicker and simpler for rapid prototyping.
+
 As I know you're so interested, here are some general values for debugging whilst setting up...
 
 {# Here's a thought ... Sijax function that's just a HTML view #}

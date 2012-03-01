@@ -17,6 +17,6 @@
 <a href="{{ url_for(endpoint, **kwargs) }}">{{ text|safe }}</a>
 {%- endmacro %}
 
-{% macro sijax_link(cmd, text) -%}
-<a onclick="Sijax.request('{{ cmd|safe }}');">{{ text|safe }}</a>
+{% macro sijax_link(cmd, text, context=None) -%}
+<a onclick="Sijax.request('{{ cmd|safe }}'{% if context %}, {{ context }}{% endif %});">{{ text|safe }}</a>
 {%- endmacro %}
