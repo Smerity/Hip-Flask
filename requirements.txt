@@ -4,6 +4,7 @@ markdown
 
 # Flask specific requirements
 flask
+flask-cache
 flask-mail
 flask-openid
 flask-script
@@ -12,5 +13,4 @@ flask-sqlalchemy
 flask-wtf
 
 # Planned requirements
-#flask-cache
 #flask-lesscss
